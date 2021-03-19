@@ -72,7 +72,7 @@ int main(void)
     scene::SceneMenu* sceneMenu = new scene::SceneMenu(currentScene, window);
     currentScene = sceneMenu;
 
-    sceneMenu->registerScene<scene1::basicScene>("Start", window);
+    sceneMenu->registerScene<scene::BasicScene>("Start", window);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
