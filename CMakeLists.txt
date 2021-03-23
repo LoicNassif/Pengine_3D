@@ -73,7 +73,7 @@ file(GLOB_RECURSE HEADER_FILES
     ${CMAKE_SOURCE_DIR}/src/*.hpp
     ${CMAKE_SOURCE_DIR}/src/tests/*.h
     ${CMAKE_SOURCE_DIR}/src/tests/*.hpp
-    ${CMAKE_SOURCE_DIR}/thirdparty/imgui/*.cpp)
+    ${CMAKE_SOURCE_DIR}/thirdparty/imgui/*.hpp)
 
 # Add .lib files
 link_directories(${CMAKE_SOURCE_DIR}/lib)

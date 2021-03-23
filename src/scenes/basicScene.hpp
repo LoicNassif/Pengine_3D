@@ -28,7 +28,7 @@ namespace scene {
 
         float m_CurrentFrame = 0;
 
-        glm::vec3 m_CubePositions[10];
+        glm::vec3 m_CubePosition;
         glm::mat4 m_Proj, m_View, m_Model, m_MVP;
 
         GLFWwindow *m_Window;

@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <vector>
 #include <functional>
 
@@ -10,6 +11,7 @@
 #include "indexbuffer.hpp"
 #include "vertexarray.hpp"
 #include "camera.hpp"
+#include "loadOBJ.hpp"
 
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
@@ -33,7 +35,6 @@ public:
 
     Material() 
         : diffuse(1.0f, 0.5f, 0.31f),
-        // specular(0.5f, 0.5f, 0.5f),
         shininess(64)
     {}
 
@@ -45,14 +46,12 @@ public:
     glm::vec3 position;
 
     glm::vec3 ambient;
-    // glm::vec3 specular;
     glm::vec3 diffuse;
 
     Light()
         : position(glm::vec3(3.0f, 0.0f, -1.0f)),
         ambient(glm::vec3(0.2f, 0.2f, 0.2f)),
         diffuse(glm::vec3(0.5f, 0.5f, 0.5f))
-        // specular(glm::vec3(1.0f, 1.0f, 1.0f))
     {}
 
     ~Light() {}

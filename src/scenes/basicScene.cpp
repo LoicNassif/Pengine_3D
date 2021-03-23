@@ -23,6 +23,9 @@ BasicScene::BasicScene(GLFWwindow *context)
       m_OffsetValuex(0), m_OffsetValuey(0), m_OffsetValuez(0),
       m_Window(context)
 {
+    
+    loadOBJ boxObj = loadOBJ();
+
     float positions[] = {
         -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
@@ -76,7 +79,7 @@ BasicScene::BasicScene(GLFWwindow *context)
         33, 34, 35
     };
 
-    m_CubePositions[0] = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_CubePosition = glm::vec3(0.0f, 0.0f, 0.0f);
 
     m_Model = glm::rotate(m_Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
@@ -121,26 +124,26 @@ void BasicScene::onRender()
     deltaTime = m_CurrentFrame - lastFrame;
     lastFrame = m_CurrentFrame;
 
+    // Cube
     {
-        for (unsigned int i = 0; i < 10; i++)
-        {
-            m_View = camera.GetViewMatrix();
-            m_Model = glm::translate(glm::mat4(1.0f), m_CubePositions[i]);
-            m_Model = glm::rotate(m_Model, (float)glfwGetTime() / 5.0f + i * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-            m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
+        m_View = camera.GetViewMatrix();
+        // m_CubePosition.y += -0.5 * 9.8 * (float)glfwGetTime() * (float)glfwGetTime() / 1000; 
 
-            glm::mat4 mvp = m_Proj * m_View * m_Model;
-            m_Shader->bind();
-            m_Shader->setUniform("u_MVP", mvp);
-            m_Renderer->draw(*m_VAO, *m_IBO, *m_Shader);
-        }
+        m_Model = glm::translate(glm::mat4(1.0f), m_CubePosition);
+        m_Model = glm::rotate(m_Model, (float)glfwGetTime() / 5.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
+
+        glm::mat4 mvp = m_Proj * m_View * m_Model;
+        m_Shader->bind();
+        m_Shader->setUniform("u_MVP", mvp);
+        m_Renderer->draw(*m_VAO, *m_IBO, *m_Shader);
+
+        m_Shader->setUniform("u_Texture", 0);
+        
+        m_Shader->setUniform("offsetx", m_OffsetValuex);
+        m_Shader->setUniform("offsety", m_OffsetValuey);
+        m_Shader->setUniform("offsetz", m_OffsetValuez);
     }
-
-    m_Shader->setUniform("u_Texture", 0);
-    
-    m_Shader->setUniform("offsetx", m_OffsetValuex);
-    m_Shader->setUniform("offsety", m_OffsetValuey);
-    m_Shader->setUniform("offsetz", m_OffsetValuez);
 }
 
 void BasicScene::onImGuiRender()
