@@ -8,12 +8,9 @@
 #include "vertexbufferlayout.hpp"
 #include "texture.hpp"
 #include "shader.hpp"
-#include "indexbuffer.hpp"
 #include "vertexarray.hpp"
 #include "camera.hpp"
-#include "loadOBJ.hpp"
-
-#include "gtc/matrix_transform.hpp"
+#include "object.hpp"
 
 #include "../renderer.hpp"
 #include "../../thirdparty/imgui/imgui.h"

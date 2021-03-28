@@ -2,11 +2,6 @@
 
 namespace scene {
 
-constexpr int n(const int numVertices)
-{
-    return numVertices;
-}
-
 Camera camera(glm::vec3(0.0f, 1.0f, 2.0f));
 float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
@@ -29,31 +24,19 @@ BasicScene::BasicScene(GLFWwindow *context)
       m_Window(context)
 {
 
-    loadOBJ boxObj = loadOBJ("../res/objects/plane_box.obj");
-    loadOBJ boxObj2 = loadOBJ("../res/objects/box.obj");
+    plane = new Object("../res/objects/plane_box.obj", glm::vec3(0.0f, 0.0f, 0.0f));
+    box = new Object("../res/objects/box.obj", glm::vec3(0.0f, 1.0f, 0.0f));
 
-    const int numVertices = boxObj.m_Vertices.size() + boxObj2.m_Vertices.size();
+    const int numVertices = plane->getNumVertices() + box->getNumVertices();
 
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> texturecoords;
 
-    for (int i=0; i < boxObj.m_Vertices.size(); i++)
-    {
-        vertices.push_back(boxObj.m_Vertices[i]);
-    }
-    for (int i=0; i < boxObj2.m_Vertices.size(); i++)
-    {
-        vertices.push_back(boxObj2.m_Vertices[i]);
-    }
+    plane->loadInVertices(vertices);
+    box->loadInVertices(vertices);
 
-    for (int i = 0; i < boxObj.m_Vertices.size(); i++)
-    {
-        texturecoords.push_back(boxObj.m_Texcoords[i]);
-    }
-    for (int i = 0; i < boxObj2.m_Vertices.size(); i++)
-    {
-        texturecoords.push_back(boxObj2.m_Texcoords[i]);
-    }
+    plane->loadInTexturecoords(texturecoords);
+    box->loadInTexturecoords(texturecoords);
 
     float* positions;
     positions = new float[8*numVertices];
@@ -75,21 +58,18 @@ BasicScene::BasicScene(GLFWwindow *context)
     }
     
     std::vector<unsigned int> test;
-    for (int i = boxObj.m_Vertices.size(); i < numVertices; i++)
+    for (int i = plane->getNumVertices(); i < numVertices; i++)
     {
         test.push_back(i);
     }
     unsigned int* indicesBox = &test[0];
 
     std::vector<unsigned int> test2;
-    for (int i = 0; i < boxObj.m_Vertices.size(); i++)
+    for (int i = 0; i < plane->getNumVertices(); i++)
     {
         test2.push_back(i);
     }
     unsigned int *indicesPlane = &test2[0];
-
-    m_PlanePosition = glm::vec3(0.0f, 0.0f, 0.0f);
-    m_CubePosition = glm::vec3(0.0f, 1.0f, 0.0f);
 
     m_Model = glm::rotate(m_Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
@@ -104,11 +84,16 @@ BasicScene::BasicScene(GLFWwindow *context)
     layout.push<float>(2, 6 * sizeof(float));
     m_VAO->addBuffer(*m_VBO, layout);
 
-    m_IBO_PLANE = std::make_unique<IndexBuffer>(indicesPlane, boxObj.m_Vertices.size());
-    m_IBO_BOX = std::make_unique<IndexBuffer>(indicesBox, boxObj2.m_Vertices.size());
+    // plane.initializeIBO(0, plane.getNumVertices());
+    // box.initializeIBO(plane.getNumVertices(), numVertices);
+
+    m_IBO_PLANE = std::make_unique<IndexBuffer>(indicesPlane, plane->getNumVertices());
+    m_IBO_BOX = std::make_unique<IndexBuffer>(indicesBox, box->getNumVertices());
 
     m_Texture0 = std::make_unique<Texture>("../res/textures/eggdog.jpg", GL_TEXTURE0, 0);
-    m_Texture0->Bind(0);
+    m_Texture1 = std::make_unique<Texture>("../res/textures/planks_horizontal.jpg", GL_TEXTURE0, 0);
+    m_Texture1->Unbind();
+    m_Texture0->Unbind();
 
     glfwSetCursorPosCallback(m_Window, mouse_callback);
     glfwSetScrollCallback(m_Window, scroll_callback);
@@ -139,14 +124,15 @@ void BasicScene::onRender()
     {
         m_View = camera.GetViewMatrix();
 
-        m_Model = glm::translate(glm::mat4(1.0f), m_PlanePosition);
+        m_Model = glm::translate(glm::mat4(1.0f), plane->m_Position);
         m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
 
         glm::mat4 mvp = m_Proj * m_View * m_Model;
+        m_Texture1->Bind(0);
         m_Shader->bind();
         m_Shader->setUniform("u_MVP", mvp);
         m_Renderer->draw(*m_VAO, *m_IBO_PLANE, *m_Shader);
-
+        m_Texture1->Unbind();
     }
 
     // Cube
@@ -154,14 +140,16 @@ void BasicScene::onRender()
         m_View = camera.GetViewMatrix();
         // m_CubePosition.y += -0.5 * 9.8 * (float)glfwGetTime() * (float)glfwGetTime() / 1000;
 
-        m_Model = glm::translate(glm::mat4(1.0f), m_CubePosition);
+        m_Model = glm::translate(glm::mat4(1.0f), box->m_Position);
         m_Model = glm::rotate(m_Model, (float)glfwGetTime() / 5.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
         m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
 
         glm::mat4 mvp = m_Proj * m_View * m_Model;
+        m_Texture0->Bind(0);
         m_Shader->bind();
         m_Shader->setUniform("u_MVP", mvp);
         m_Renderer->draw(*m_VAO, *m_IBO_BOX, *m_Shader);
+        m_Texture0->Unbind();
     }
 
     m_Shader->setUniform("u_Texture", 0);
