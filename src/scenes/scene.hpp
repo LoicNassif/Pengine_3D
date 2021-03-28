@@ -13,7 +13,6 @@
 #include "camera.hpp"
 #include "loadOBJ.hpp"
 
-#include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
 #include "../renderer.hpp"

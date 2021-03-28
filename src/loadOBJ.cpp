@@ -2,8 +2,7 @@
 #include "loadOBJ.hpp"
 
 // TAKEN FROM EXAMPLE CODE ON tinyobjloader GITHUB
-loadOBJ::loadOBJ()  {
-    std::string inputFile = "../res/objects/box.obj";
+loadOBJ::loadOBJ(std::string inputFile)  {
     tinyobj::ObjReaderConfig reader_config;
 
     tinyobj::ObjReader reader;
@@ -40,17 +39,28 @@ loadOBJ::loadOBJ()  {
                 tinyobj::real_t vy = m_Attrib.vertices[3*size_t(idx.vertex_index)+1];
                 tinyobj::real_t vz = m_Attrib.vertices[3*size_t(idx.vertex_index)+2];
 
+                m_Vertices.push_back(glm::vec3(vx, vy, vz));
+
                 // Check if `normal_index` is zero or positive. Negative means no normal data.
                 if (idx.normal_index >= 0) {
                     tinyobj::real_t nx = m_Attrib.normals[3*size_t(idx.normal_index)+0];
                     tinyobj::real_t ny = m_Attrib.normals[3*size_t(idx.normal_index)+1];
                     tinyobj::real_t nz = m_Attrib.normals[3*size_t(idx.normal_index)+2];
+
+                    m_Normals.push_back(glm::vec3(nx, ny, nz));
+                } else {
+                    m_Normals.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
                 }
+
 
                 // Check if `texcoords_index` is zero or positive. Negative means no textcoord data.
                 if (idx.texcoord_index >= 0) {
                     tinyobj::real_t tx = m_Attrib.texcoords[2*size_t(idx.texcoord_index)+0];
                     tinyobj::real_t ty = m_Attrib.texcoords[2*size_t(idx.texcoord_index)+1];
+
+                    m_Texcoords.push_back(glm::vec2(tx, ty));
+                } else {
+                    m_Texcoords.push_back(glm::vec2(0.0f, 0.0f));
                 }
             }
             index_offset += fv;

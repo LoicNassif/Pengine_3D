@@ -3,6 +3,7 @@
 #include "scene.hpp"
 
 #include <memory>
+#include <list>
 
 namespace scene {
     class BasicScene : public Scene {
@@ -16,7 +17,8 @@ namespace scene {
 
     private:
         std::unique_ptr<VertexArray> m_VAO;
-        std::unique_ptr<IndexBuffer> m_IBO;
+        std::unique_ptr<IndexBuffer> m_IBO_PLANE;
+        std::unique_ptr<IndexBuffer> m_IBO_BOX;
         std::unique_ptr<VertexBuffer> m_VBO;
         std::unique_ptr<Shader> m_Shader;
         std::unique_ptr<Texture> m_Texture0;
@@ -29,8 +31,11 @@ namespace scene {
         float m_CurrentFrame = 0;
 
         glm::vec3 m_CubePosition;
+        glm::vec3 m_PlanePosition;
+
         glm::mat4 m_Proj, m_View, m_Model, m_MVP;
 
         GLFWwindow *m_Window;
+        GLuint byteoffset;
     };
 }

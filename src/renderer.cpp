@@ -23,10 +23,16 @@ void Renderer::clear() const {
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
-void Renderer::draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const {
+void Renderer::draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, GLuint byteOffset) const {
+    // Bind the IBO
+    ib.bind();
+    
     // Activate the shader
     shader.bind();
 
     // Draw call
-    GLCall(glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, NULL));
+    GLCall(glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, (void*)byteOffset));
+
+    // Unbind the IBO
+    ib.unbind();
 }
