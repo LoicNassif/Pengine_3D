@@ -25,18 +25,21 @@ BasicScene::BasicScene(GLFWwindow *context)
 {
 
     plane = new Object("../res/objects/plane_box.obj", glm::vec3(0.0f, 0.0f, 0.0f));
-    box = new Object("../res/objects/box.obj", glm::vec3(0.0f, 1.0f, 0.0f));
+    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 1.0f, 0.0f));
+    cone = new Object("../res/objects/big_funnel3.obj", glm::vec3(0.0f, 1.0f, 0.0f));
 
-    const int numVertices = plane->getNumVertices() + box->getNumVertices();
+    const int numVertices = plane->getNumVertices() + box->getNumVertices() + cone->getNumVertices();
 
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> texturecoords;
 
     plane->loadInVertices(vertices);
     box->loadInVertices(vertices);
+    cone->loadInVertices(vertices);
 
     plane->loadInTexturecoords(texturecoords);
     box->loadInTexturecoords(texturecoords);
+    cone->loadInTexturecoords(texturecoords);
 
     float* positions;
     positions = new float[8*numVertices];
@@ -56,20 +59,27 @@ BasicScene::BasicScene(GLFWwindow *context)
         positions[8 * i + 6] = texturecoords[i].x;
         positions[8 * i + 7] = texturecoords[i].y;
     }
-    
-    std::vector<unsigned int> test;
-    for (int i = plane->getNumVertices(); i < numVertices; i++)
-    {
-        test.push_back(i);
-    }
-    unsigned int* indicesBox = &test[0];
 
-    std::vector<unsigned int> test2;
+    std::vector<unsigned int> t1;
     for (int i = 0; i < plane->getNumVertices(); i++)
     {
-        test2.push_back(i);
+        t1.push_back(i);
     }
-    unsigned int *indicesPlane = &test2[0];
+    unsigned int *indicesPlane = &t1[0];
+
+    std::vector<unsigned int> t2;
+    for (int i = plane->getNumVertices(); i < plane->getNumVertices() + box->getNumVertices(); i++)
+    {
+        t2.push_back(i);
+    }
+    unsigned int* indicesBox = &t2[0];
+
+    std::vector<unsigned int> t3;
+    for (int i = plane->getNumVertices() + box->getNumVertices(); i < numVertices; i++)
+    {
+        t3.push_back(i);
+    }
+    unsigned int *indicesCone = &t3[0];
 
     m_Model = glm::rotate(m_Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
@@ -89,6 +99,7 @@ BasicScene::BasicScene(GLFWwindow *context)
 
     m_IBO_PLANE = std::make_unique<IndexBuffer>(indicesPlane, plane->getNumVertices());
     m_IBO_BOX = std::make_unique<IndexBuffer>(indicesBox, box->getNumVertices());
+    m_IBO_CONE = std::make_unique<IndexBuffer>(indicesCone, cone->getNumVertices());
 
     m_Texture0 = std::make_unique<Texture>("../res/textures/eggdog.jpg", GL_TEXTURE0, 0);
     m_Texture1 = std::make_unique<Texture>("../res/textures/planks_horizontal.jpg", GL_TEXTURE0, 0);
@@ -149,6 +160,23 @@ void BasicScene::onRender()
         m_Shader->bind();
         m_Shader->setUniform("u_MVP", mvp);
         m_Renderer->draw(*m_VAO, *m_IBO_BOX, *m_Shader);
+        m_Texture0->Unbind();
+    }
+
+    // Cone
+    {
+        m_View = camera.GetViewMatrix();
+        // m_CubePosition.y += -0.5 * 9.8 * (float)glfwGetTime() * (float)glfwGetTime() / 1000;
+
+        m_Model = glm::translate(glm::mat4(1.0f), cone->m_Position);
+        m_Model = glm::rotate(m_Model, (float)glfwGetTime() / 5.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
+
+        glm::mat4 mvp = m_Proj * m_View * m_Model;
+        m_Texture0->Bind(0);
+        m_Shader->bind();
+        m_Shader->setUniform("u_MVP", mvp);
+        m_Renderer->draw(*m_VAO, *m_IBO_CONE, *m_Shader);
         m_Texture0->Unbind();
     }
 
