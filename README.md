@@ -4,9 +4,11 @@ Based on Kenny Erleben's 2017 work in his paper _Rigid Body Contact Problems usi
 
 OpenGL pipeline code based on [learnopengl.com](https://learnopengl.com/), The Cherno's [YouTube](https://www.youtube.com/user/TheChernoProject) tutorial series, and [opengl-tutorial.org](https://www.opengl-tutorial.org/).
 
-Used [Tinyobjloader](https://github.com/tinyobjloader/tinyobjloader) for OBJ file loading and handling.
+Uses [Tinyobjloader](https://github.com/tinyobjloader/tinyobjloader) for OBJ file loading and handling.
 
-Used [Discregrid](https://github.com/InteractiveComputerGraphics/Discregrid) for SDF capabilities for use in collision detection.
+Uses [Discregrid](https://github.com/InteractiveComputerGraphics/Discregrid) for SDF capabilities for use in collision detection.
+
+Uses [Eigen3](https://eigen.tuxfamily.org/index.php?title=Main_Page) mainly for Discregrid, most other numerical operations are handled using GLM.
 
 [1]:
 Kenny Erleben. 2017. Rigid Body Contact Problems using Proximal Operators. In Proceedings of ACM SIGGRAPH / Eurographics Symposium on Computer Animation (SCA), Los Angles USA, July 2017 (SCA’17),12 pages.DOI: 10.475/123_4
