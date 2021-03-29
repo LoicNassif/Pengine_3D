@@ -4,6 +4,8 @@
 #include "indexbuffer.hpp"
 #include "gtc/matrix_transform.hpp"
 
+#include <Discregrid/All>
+
 class Object {
     public:
         Object(std::string filename, glm::vec3 position);

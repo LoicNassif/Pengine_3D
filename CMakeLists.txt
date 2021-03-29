@@ -113,6 +113,7 @@ include_directories(
     ${OPENGL_INCLUDE_DIRS}
     "${CMAKE_SOURCE_DIR}/thirdparty/imgui"
     "${CMAKE_SOURCE_DIR}/thirdparty/glm"
+    "${CMAKE_SOURCE_DIR}/thirdparty/Eigen3/include/eigen3"
     "${CMAKE_SOURCE_DIR}/src"
     "${CMAKE_SOURCE_DIR}/include"
 )
