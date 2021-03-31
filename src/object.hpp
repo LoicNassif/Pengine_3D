@@ -25,4 +25,7 @@ class Object {
     private : 
         int numVertices;
         loadOBJ obj;
+
+        Discregrid::CubicLagrangeDiscreteGrid sdf;
+        Discregrid::TriangleMesh mesh;
 };

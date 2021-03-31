@@ -1,8 +1,22 @@
 #include "object.hpp"
 
-Object::Object(std::string filename, glm::vec3 position) 
-    : obj(loadOBJ(filename)), m_Position(position)
+Object::Object(std::string filename, glm::vec3 position, ) 
+    : obj(loadOBJ(filename)), mesh(filename), m_Position(position)
 {
+    Eigen::AlignedBox3f domain;
+    domain.setEmpty();
+
+    Discregrid::MeshDistance md(mesh);
+
+    for (auto const& x : mesh.vertices()) {
+        domain.extend(x);
+    }
+
+    domain.max() += 1.0e-3f * domain.diagonal().norm() * Eigen::Vector3f::Ones();
+    domain.min() -= 1.0e-3f * domain.diagonal().norm() * Eigen::Vector3f::Ones();
+
+    // sdf = Discregrid::CubicLagrangeDiscreteGrid(domain, resolution);
+
     numVertices = obj.m_Vertices.size();
     translate(m_Position);
 }
