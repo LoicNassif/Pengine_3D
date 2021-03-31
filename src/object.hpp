@@ -8,7 +8,7 @@
 
 class Object {
     public:
-        Object(std::string filename, glm::vec3 position);
+        Object(std::string filename, glm::vec3 position, const std::array<unsigned int, 3>& res);
         ~Object();
 
         int getNumVertices();

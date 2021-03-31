@@ -9,8 +9,9 @@ class CubicLagrangeDiscreteGrid : public DiscreteGrid
 {
 public:
 
+	CubicLagrangeDiscreteGrid() {};
 	CubicLagrangeDiscreteGrid(std::string const& filename);
-	CubicLagrangeDiscreteGrid(Eigen::AlignedBox3d const& domain,
+	CubicLagrangeDiscreteGrid(Eigen::AlignedBox3f const& domain,
 		std::array<unsigned int, 3> const& resolution);
 
 	void save(std::string const& filename) const override;
