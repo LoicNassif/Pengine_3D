@@ -4,11 +4,9 @@
 #include "indexbuffer.hpp"
 #include "gtc/matrix_transform.hpp"
 
-#include <Discregrid/All>
-
 class Object {
     public:
-        Object(std::string filename, glm::vec3 position, const std::array<unsigned int, 3>& res);
+        Object(std::string filename, glm::vec3 position);
         ~Object();
 
         int getNumVertices();
@@ -25,7 +23,4 @@ class Object {
     private : 
         int numVertices;
         loadOBJ obj;
-
-        Discregrid::CubicLagrangeDiscreteGrid sdf;
-        Discregrid::TriangleMesh mesh;
 };

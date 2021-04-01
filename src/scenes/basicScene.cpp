@@ -24,9 +24,9 @@ BasicScene::BasicScene(GLFWwindow *context)
       m_Window(context)
 {
 
-    plane = new Object("../res/objects/plane_box.obj", glm::vec3(0.0f, 0.0f, 0.0f), {8,8,8});
-    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 1.0f, 0.0f), {8,8,8});
-    cone = new Object("../res/objects/big_funnel3.obj", glm::vec3(0.0f, 1.0f, 0.0f), {8,8,8});
+    plane = new Object("../res/objects/plane_box.obj", glm::vec3(0.0f, 0.0f, 0.0f));
+    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 1.0f, 0.0f));
+    cone = new Object("../res/objects/big_funnel3.obj", glm::vec3(0.0f, 1.0f, 0.0f));
 
     const int numVertices = plane->getNumVertices() + box->getNumVertices() + cone->getNumVertices();
 
