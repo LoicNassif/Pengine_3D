@@ -19,8 +19,8 @@ class Object {
         void translate(const glm::vec3& translation);
 
         glm::vec3 m_Position;
+        loadOBJ obj;
 
     private : 
         int numVertices;
-        loadOBJ obj;
 };

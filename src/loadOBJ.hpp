@@ -13,6 +13,7 @@ class loadOBJ {
         std::vector<tinyobj::shape_t> m_Shapes;
         std::vector<tinyobj::material_t> m_Materials;
 
+        // Note that a face is three vertices in a row.
         std::vector<glm::vec3> m_Vertices; // x, y, z
         std::vector<glm::vec3> m_Normals;  // nx, ny, nz
         std::vector<glm::vec2> m_Texcoords; // u, v
