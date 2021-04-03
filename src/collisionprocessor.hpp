@@ -7,8 +7,9 @@ public:
     CollisionProcessor() {};
     ~CollisionProcessor() {};
 
-    void processCollision(Object* a, Object* b);
+    void processCollision(const std::vector<Object *> &objs);
+    // void inputObject(Object* a);
 
 private:
-    void detectCollision(Object* a, Object* b);
+    bool detectCollision(Object* a, Object* b);
 };

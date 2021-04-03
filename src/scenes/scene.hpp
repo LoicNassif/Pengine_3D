@@ -64,6 +64,7 @@ public:
     virtual void onUpdate(float deltaTime, bool cursorEnabled) {}
     virtual void onRender() {}
     virtual void onImGuiRender() {}
+    virtual void processInput() {}
     };
 
 class SceneMenu : public Scene {
@@ -83,7 +84,7 @@ private:
     GLFWwindow* m_Window;
     Scene*& m_CurrentScene;
     CollisionProcessor* m_CollisionProcessor;
-    
+
     std::vector<std::pair<std::string, std::function<Scene *(GLFWwindow *window)>>> m_Scenes;
 };
 }

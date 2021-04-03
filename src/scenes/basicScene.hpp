@@ -14,6 +14,8 @@ namespace scene {
         void onUpdate(float deltaTime, bool cursorEnabled) override;
         void onRender() override;
         void onImGuiRender() override;
+        void processInput() override;
+
 
     private:
         std::unique_ptr<VertexArray> m_VAO;
@@ -31,12 +33,16 @@ namespace scene {
         float m_OffsetValuez;
 
         float m_CurrentFrame = 0;
+        int m_CurrentAnimationFrame = 0;
+        bool m_Paused = false;
 
         Object* plane;
         Object* box;
         Object *cone;
+        std::vector<Object*> m_objects;
 
         glm::mat4 m_Proj, m_View, m_Model, m_MVP;
+        glm::mat4 m_ModelPausedCone, m_ModelPausedCube, m_ModelPausedPlane;
 
         GLFWwindow *m_Window;
         GLuint byteoffset;

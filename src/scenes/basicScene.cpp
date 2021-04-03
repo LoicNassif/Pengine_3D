@@ -81,6 +81,10 @@ BasicScene::BasicScene(GLFWwindow *context)
     }
     unsigned int *indicesCone = &t3[0];
 
+    m_objects.push_back(plane);
+    m_objects.push_back(box);
+    m_objects.push_back(cone);
+
     m_Model = glm::rotate(m_Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
 
@@ -116,77 +120,95 @@ BasicScene::~BasicScene()
 
 void BasicScene::onUpdate(float deltaTime, bool cursorEnabled)
 {
+    processInput();
+
     CURSOR_ENABLED = cursorEnabled;
 }
 
 void BasicScene::onRender()
 {
-    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-    GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-    processInput(m_Window);
-    m_Renderer->clear();
+            GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+            GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-    m_CurrentFrame = glfwGetTime();
-    deltaTime = m_CurrentFrame - lastFrame;
-    lastFrame = m_CurrentFrame;
+            m_Renderer->clear();
 
-    m_CollisionProcessor->processCollision(plane, box);
+            m_CurrentFrame = glfwGetTime();
+            deltaTime = m_CurrentFrame - lastFrame;
+            lastFrame = m_CurrentFrame;
 
-    // Plane
-    {
-        m_View = camera.GetViewMatrix();
+            m_CollisionProcessor->processCollision(m_objects);
 
-        m_Model = glm::translate(glm::mat4(1.0f), plane->m_Position);
-        m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
+            // Plane
+            {
+                m_View = camera.GetViewMatrix();
 
-        glm::mat4 mvp = m_Proj * m_View * m_Model;
-        m_Texture1->Bind(0);
-        m_Shader->bind();
-        m_Shader->setUniform("u_MVP", mvp);
-        m_Renderer->draw(*m_VAO, *m_IBO_PLANE, *m_Shader);
-        m_Texture1->Unbind();
-    }
+                if (!m_Paused) {
+                    m_Model = glm::translate(glm::mat4(1.0f), plane->m_Position);
+                    m_ModelPausedPlane = m_Model;
+                } else {
+                    m_Model = m_ModelPausedPlane;
+                }
+                m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
 
-    // Cube
-    {
-        m_View = camera.GetViewMatrix();
-        // m_CubePosition.y += -0.5 * 9.8 * (float)glfwGetTime() * (float)glfwGetTime() / 1000;
+                glm::mat4 mvp = m_Proj * m_View * m_Model;
+                m_Texture1->Bind(0);
+                m_Shader->bind();
+                m_Shader->setUniform("u_MVP", mvp);
+                m_Renderer->draw(*m_VAO, *m_IBO_PLANE, *m_Shader);
+                m_Texture1->Unbind();
+            }
 
-        m_Model = glm::translate(glm::mat4(1.0f), box->m_Position);
-        m_Model = glm::rotate(m_Model, (float)glfwGetTime() / 5.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-        m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
+            // Cube
+            {
+                m_View = camera.GetViewMatrix();
 
-        glm::mat4 mvp = m_Proj * m_View * m_Model;
-        m_Texture0->Bind(0);
-        m_Shader->bind();
-        m_Shader->setUniform("u_MVP", mvp);
-        m_Renderer->draw(*m_VAO, *m_IBO_BOX, *m_Shader);
-        m_Texture0->Unbind();
-    }
+                if (!m_Paused) {
+                    box->m_Position.y += -0.5 * 9.8 * (float)m_CurrentAnimationFrame * (float)m_CurrentAnimationFrame / 1000000;
+                    m_Model = glm::translate(glm::mat4(1.0f), box->m_Position);
+                    m_Model = glm::rotate(m_Model, (float)m_CurrentAnimationFrame / 50.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+                    m_ModelPausedCube = m_Model;
+                } else {
+                    m_Model = m_ModelPausedCube;
+                }
+                m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
 
-    // Cone
-    {
-        m_View = camera.GetViewMatrix();
-        // m_CubePosition.y += -0.5 * 9.8 * (float)glfwGetTime() * (float)glfwGetTime() / 1000;
+                glm::mat4 mvp = m_Proj * m_View * m_Model;
+                m_Texture0->Bind(0);
+                m_Shader->bind();
+                m_Shader->setUniform("u_MVP", mvp);
+                m_Renderer->draw(*m_VAO, *m_IBO_BOX, *m_Shader);
+                m_Texture0->Unbind();
+            }
 
-        m_Model = glm::translate(glm::mat4(1.0f), cone->m_Position);
-        m_Model = glm::rotate(m_Model, (float)glfwGetTime() / 5.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-        m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
+            // Cone
+            {
+                m_View = camera.GetViewMatrix();
 
-        glm::mat4 mvp = m_Proj * m_View * m_Model;
-        m_Texture0->Bind(0);
-        m_Shader->bind();
-        m_Shader->setUniform("u_MVP", mvp);
-        m_Renderer->draw(*m_VAO, *m_IBO_CONE, *m_Shader);
-        m_Texture0->Unbind();
-    }
+                if (!m_Paused) {
+                    m_CurrentAnimationFrame++;
+                    m_Model = glm::translate(glm::mat4(1.0f), cone->m_Position);
+                    m_Model = glm::rotate(m_Model, (float)m_CurrentAnimationFrame / 50.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+                    m_ModelPausedCone = m_Model;
+                } else {
+                    m_Model = m_ModelPausedCone;
+                }
+                m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
 
-    m_Shader->setUniform("u_Texture", 0);
+                glm::mat4 mvp = m_Proj * m_View * m_Model;
+                m_Texture0->Bind(0);
+                m_Shader->bind();
+                m_Shader->setUniform("u_MVP", mvp);
+                m_Renderer->draw(*m_VAO, *m_IBO_CONE, *m_Shader);
+                m_Texture0->Unbind();
+            }
 
-    m_Shader->setUniform("offsetx", m_OffsetValuex);
-    m_Shader->setUniform("offsety", m_OffsetValuey);
-    m_Shader->setUniform("offsetz", m_OffsetValuez);
+            m_Shader->setUniform("u_Texture", 0);
+
+            m_Shader->setUniform("offsetx", m_OffsetValuex);
+            m_Shader->setUniform("offsety", m_OffsetValuey);
+            m_Shader->setUniform("offsetz", m_OffsetValuez);
+        
 }
 
 void BasicScene::onImGuiRender()
@@ -198,23 +220,28 @@ void BasicScene::onImGuiRender()
                 (double)camera.Yaw,
                 (double)camera.Fov);
 
+    if(ImGui::Button("Pause")) m_Paused = !m_Paused;
+
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 }
 
-void processInput(GLFWwindow *window)
+void BasicScene::processInput()
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(m_Window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(m_Window, true);
 
     const float cameraSpeed = 4.0f * deltaTime;
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    if (glfwGetKey(m_Window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    if (glfwGetKey(m_Window, GLFW_KEY_S) == GLFW_PRESS)
         camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    if (glfwGetKey(m_Window, GLFW_KEY_A) == GLFW_PRESS)
         camera.ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (glfwGetKey(m_Window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+
+    if (glfwGetKey(m_Window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        m_Paused = !m_Paused;
 }
 
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
