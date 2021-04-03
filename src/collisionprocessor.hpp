@@ -6,6 +6,9 @@ class CollisionProcessor {
 public:
     CollisionProcessor() {};
     ~CollisionProcessor() {};
-    
-    void detectCollision(Object a, Object b);
+
+    void processCollision(Object* a, Object* b);
+
+private:
+    void detectCollision(Object* a, Object* b);
 };

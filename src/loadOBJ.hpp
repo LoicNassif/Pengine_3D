@@ -1,6 +1,7 @@
 #pragma once
 #include "../include/tinyobjloader/tiny_obj_loader.h"
 #include <iostream>
+#include <Eigen/Dense>
 
 #include "glm.hpp"
 
@@ -14,7 +15,7 @@ class loadOBJ {
         std::vector<tinyobj::material_t> m_Materials;
 
         // Note that a face is three vertices in a row.
-        std::vector<glm::vec3> m_Vertices; // x, y, z
-        std::vector<glm::vec3> m_Normals;  // nx, ny, nz
-        std::vector<glm::vec2> m_Texcoords; // u, v
+        std::vector<Eigen::Vector3f> m_Vertices; // x, y, z
+        std::vector<Eigen::Vector3f> m_Normals;  // nx, ny, nz
+        std::vector<Eigen::Vector2f> m_Texcoords; // u, v
 };

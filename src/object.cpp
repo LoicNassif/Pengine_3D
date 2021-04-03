@@ -13,13 +13,15 @@ int Object::getNumVertices() {
     return numVertices;
 }
 
-void Object::loadInVertices(std::vector<glm::vec3>& vertices) {
+void Object::loadInVertices(std::vector<Eigen::Vector3f> &vertices)
+{
     for (int i = 0; i < obj.m_Vertices.size(); i++) {
         vertices.push_back(obj.m_Vertices[i]);
     }
 }
 
-void Object::loadInTexturecoords(std::vector<glm::vec2> &texturecoords) {
+void Object::loadInTexturecoords(std::vector<Eigen::Vector2f> &texturecoords)
+{
     for (int i = 0; i < obj.m_Vertices.size(); i++) {
         texturecoords.push_back(obj.m_Texcoords[i]);
     }

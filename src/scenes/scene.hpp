@@ -11,6 +11,7 @@
 #include "vertexarray.hpp"
 #include "camera.hpp"
 #include "object.hpp"
+#include "collisionprocessor.hpp"
 
 #include "../renderer.hpp"
 #include "../../thirdparty/imgui/imgui.h"
@@ -81,6 +82,8 @@ public:
 private:
     GLFWwindow* m_Window;
     Scene*& m_CurrentScene;
+    CollisionProcessor* m_CollisionProcessor;
+    
     std::vector<std::pair<std::string, std::function<Scene *(GLFWwindow *window)>>> m_Scenes;
 };
 }

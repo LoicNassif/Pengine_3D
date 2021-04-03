@@ -40,5 +40,7 @@ namespace scene {
 
         GLFWwindow *m_Window;
         GLuint byteoffset;
+
+        CollisionProcessor* m_CollisionProcessor;
     };
 }

@@ -39,7 +39,7 @@ loadOBJ::loadOBJ(std::string inputFile)  {
                 tinyobj::real_t vy = m_Attrib.vertices[3*size_t(idx.vertex_index)+1];
                 tinyobj::real_t vz = m_Attrib.vertices[3*size_t(idx.vertex_index)+2];
 
-                m_Vertices.push_back(glm::vec3(vx, vy, vz));
+                m_Vertices.push_back(Eigen::Vector3f(vx, vy, vz));
 
                 // Check if `normal_index` is zero or positive. Negative means no normal data.
                 if (idx.normal_index >= 0) {
@@ -47,9 +47,9 @@ loadOBJ::loadOBJ(std::string inputFile)  {
                     tinyobj::real_t ny = m_Attrib.normals[3*size_t(idx.normal_index)+1];
                     tinyobj::real_t nz = m_Attrib.normals[3*size_t(idx.normal_index)+2];
 
-                    m_Normals.push_back(glm::vec3(nx, ny, nz));
+                    m_Normals.push_back(Eigen::Vector3f(nx, ny, nz));
                 } else {
-                    m_Normals.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
+                    m_Normals.push_back(Eigen::Vector3f(0.0f, 0.0f, 0.0f));
                 }
 
 
@@ -58,9 +58,9 @@ loadOBJ::loadOBJ(std::string inputFile)  {
                     tinyobj::real_t tx = m_Attrib.texcoords[2*size_t(idx.texcoord_index)+0];
                     tinyobj::real_t ty = m_Attrib.texcoords[2*size_t(idx.texcoord_index)+1];
 
-                    m_Texcoords.push_back(glm::vec2(tx, ty));
+                    m_Texcoords.push_back(Eigen::Vector2f(tx, ty));
                 } else {
-                    m_Texcoords.push_back(glm::vec2(0.0f, 0.0f));
+                    m_Texcoords.push_back(Eigen::Vector2f(0.0f, 0.0f));
                 }
             }
             index_offset += fv;

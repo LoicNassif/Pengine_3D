@@ -30,8 +30,8 @@ BasicScene::BasicScene(GLFWwindow *context)
 
     const int numVertices = plane->getNumVertices() + box->getNumVertices() + cone->getNumVertices();
 
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec2> texturecoords;
+    std::vector<Eigen::Vector3f> vertices;
+    std::vector<Eigen::Vector2f> texturecoords;
 
     plane->loadInVertices(vertices);
     box->loadInVertices(vertices);
@@ -46,9 +46,9 @@ BasicScene::BasicScene(GLFWwindow *context)
 
     for (int i=0; i<numVertices; i++) {
         // Positions
-        positions[8 * i + 0] = vertices[i].x;
-        positions[8 * i + 1] = vertices[i].y;
-        positions[8 * i + 2] = vertices[i].z;
+        positions[8 * i + 0] = vertices[i].x();
+        positions[8 * i + 1] = vertices[i].y();
+        positions[8 * i + 2] = vertices[i].z();
 
         // Colour
         positions[8 * i + 3] = 0;
@@ -56,8 +56,8 @@ BasicScene::BasicScene(GLFWwindow *context)
         positions[8 * i + 5] = 0;
 
         // Texture coords
-        positions[8 * i + 6] = texturecoords[i].x;
-        positions[8 * i + 7] = texturecoords[i].y;
+        positions[8 * i + 6] = texturecoords[i].x();
+        positions[8 * i + 7] = texturecoords[i].y();
     }
 
     std::vector<unsigned int> t1;
@@ -130,6 +130,8 @@ void BasicScene::onRender()
     m_CurrentFrame = glfwGetTime();
     deltaTime = m_CurrentFrame - lastFrame;
     lastFrame = m_CurrentFrame;
+
+    m_CollisionProcessor->processCollision(plane, box);
 
     // Plane
     {

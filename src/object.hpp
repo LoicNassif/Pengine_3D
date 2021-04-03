@@ -10,8 +10,8 @@ class Object {
         ~Object();
 
         int getNumVertices();
-        void loadInVertices(std::vector<glm::vec3>& vertices);
-        void loadInTexturecoords(std::vector<glm::vec2> &texturecoords);
+        void loadInVertices(std::vector<Eigen::Vector3f> &vertices);
+        void loadInTexturecoords(std::vector<Eigen::Vector2f> &texturecoords);
         // void initializeIBO(int start, int end);
         // std::unique_ptr<IndexBuffer> m_IBO;
 
