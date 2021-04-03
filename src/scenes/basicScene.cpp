@@ -2,7 +2,7 @@
 
 namespace scene {
 
-Camera camera(glm::vec3(0.0f, 1.0f, 2.0f));
+Camera camera(glm::vec3(1.0f, 0.5f, 1.5f));
 float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
 bool firstMouse = true;
@@ -25,7 +25,7 @@ BasicScene::BasicScene(GLFWwindow *context)
 {
 
     plane = new Object("../res/objects/plane_box.obj", glm::vec3(0.0f, 0.0f, 0.0f));
-    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 1.0f, 0.0f));
+    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 0.5f, 0.0f));
     cone = new Object("../res/objects/big_funnel3.obj", glm::vec3(0.0f, 1.0f, 0.0f));
 
     const int numVertices = plane->getNumVertices() + box->getNumVertices() + cone->getNumVertices();
@@ -139,6 +139,14 @@ void BasicScene::onRender()
 
             m_CollisionProcessor->processCollision(m_objects);
 
+            if (!m_Paused)
+                m_CurrentAnimationFrame++;
+
+            // Start with Paused state
+            if (m_CurrentAnimationFrame == 2) {
+                m_Paused = true;
+            }
+
             // Plane
             {
                 m_View = camera.GetViewMatrix();
@@ -164,9 +172,11 @@ void BasicScene::onRender()
                 m_View = camera.GetViewMatrix();
 
                 if (!m_Paused) {
-                    box->m_Position.y += -0.5 * 9.8 * (float)m_CurrentAnimationFrame * (float)m_CurrentAnimationFrame / 1000000;
+                    box->m_Position.y += (float)-1 / (float)500;
+
+                    // box->m_Position.y += -0.5 * 9.8 * (float)m_CurrentAnimationFrame * (float)m_CurrentAnimationFrame / 1000000;
                     m_Model = glm::translate(glm::mat4(1.0f), box->m_Position);
-                    m_Model = glm::rotate(m_Model, (float)m_CurrentAnimationFrame / 50.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+                    // m_Model = glm::rotate(m_Model, (float)m_CurrentAnimationFrame / 50.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
                     m_ModelPausedCube = m_Model;
                 } else {
                     m_Model = m_ModelPausedCube;
@@ -186,7 +196,6 @@ void BasicScene::onRender()
                 m_View = camera.GetViewMatrix();
 
                 if (!m_Paused) {
-                    m_CurrentAnimationFrame++;
                     m_Model = glm::translate(glm::mat4(1.0f), cone->m_Position);
                     m_Model = glm::rotate(m_Model, (float)m_CurrentAnimationFrame / 50.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
                     m_ModelPausedCone = m_Model;
