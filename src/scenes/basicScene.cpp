@@ -25,21 +25,21 @@ BasicScene::BasicScene(GLFWwindow *context)
 {
 
     plane = new Object("../res/objects/plane_box.obj", glm::vec3(0.0f, 0.0f, 0.0f));
-    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 0.5f, 0.0f));
+    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 0.5f, -9.0f));
     cone = new Object("../res/objects/big_funnel3.obj", glm::vec3(0.0f, 1.0f, 0.0f));
 
-    const int numVertices = plane->getNumVertices() + box->getNumVertices() + cone->getNumVertices();
+    const int numVertices = plane->getNumVertices() + box->getNumVertices(); // + cone->getNumVertices();
 
     std::vector<Eigen::Vector3f> vertices;
     std::vector<Eigen::Vector2f> texturecoords;
 
     plane->loadInVertices(vertices);
     box->loadInVertices(vertices);
-    cone->loadInVertices(vertices);
+    // cone->loadInVertices(vertices);
 
     plane->loadInTexturecoords(texturecoords);
     box->loadInTexturecoords(texturecoords);
-    cone->loadInTexturecoords(texturecoords);
+    // cone->loadInTexturecoords(texturecoords);
 
     float* positions;
     positions = new float[8*numVertices];
@@ -74,16 +74,16 @@ BasicScene::BasicScene(GLFWwindow *context)
     }
     unsigned int* indicesBox = &t2[0];
 
-    std::vector<unsigned int> t3;
-    for (int i = plane->getNumVertices() + box->getNumVertices(); i < numVertices; i++)
-    {
-        t3.push_back(i);
-    }
-    unsigned int *indicesCone = &t3[0];
+    // std::vector<unsigned int> t3;
+    // for (int i = plane->getNumVertices() + box->getNumVertices(); i < numVertices; i++)
+    // {
+    //     t3.push_back(i);
+    // }
+    // unsigned int *indicesCone = &t3[0];
 
     m_objects.push_back(plane);
     m_objects.push_back(box);
-    m_objects.push_back(cone);
+    // m_objects.push_back(cone);
 
     m_Model = glm::rotate(m_Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
@@ -103,7 +103,7 @@ BasicScene::BasicScene(GLFWwindow *context)
 
     m_IBO_PLANE = std::make_unique<IndexBuffer>(indicesPlane, plane->getNumVertices());
     m_IBO_BOX = std::make_unique<IndexBuffer>(indicesBox, box->getNumVertices());
-    m_IBO_CONE = std::make_unique<IndexBuffer>(indicesCone, cone->getNumVertices());
+    // m_IBO_CONE = std::make_unique<IndexBuffer>(indicesCone, cone->getNumVertices());
 
     m_Texture0 = std::make_unique<Texture>("../res/textures/eggdog.jpg", GL_TEXTURE0, 0);
     m_Texture1 = std::make_unique<Texture>("../res/textures/planks_horizontal.jpg", GL_TEXTURE0, 0);
@@ -137,10 +137,13 @@ void BasicScene::onRender()
             deltaTime = m_CurrentFrame - lastFrame;
             lastFrame = m_CurrentFrame;
 
-            m_CollisionProcessor->processCollision(m_objects);
 
-            if (!m_Paused)
+            if (!m_Paused) {
+                std::cout << std::endl;
+                std::cout << "Animation Frame: " << m_CurrentAnimationFrame << std::endl;
                 m_CurrentAnimationFrame++;
+                m_CollisionProcessor->processCollision(m_objects);
+            }
 
             // Start with Paused state
             if (m_CurrentAnimationFrame == 2) {
@@ -192,25 +195,25 @@ void BasicScene::onRender()
             }
 
             // Cone
-            {
-                m_View = camera.GetViewMatrix();
+            // {
+            //     m_View = camera.GetViewMatrix();
 
-                if (!m_Paused) {
-                    m_Model = glm::translate(glm::mat4(1.0f), cone->m_Position);
-                    m_Model = glm::rotate(m_Model, (float)m_CurrentAnimationFrame / 50.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-                    m_ModelPausedCone = m_Model;
-                } else {
-                    m_Model = m_ModelPausedCone;
-                }
-                m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
+            //     if (!m_Paused) {
+            //         m_Model = glm::translate(glm::mat4(1.0f), cone->m_Position);
+            //         m_Model = glm::rotate(m_Model, (float)m_CurrentAnimationFrame / 50.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+            //         m_ModelPausedCone = m_Model;
+            //     } else {
+            //         m_Model = m_ModelPausedCone;
+            //     }
+            //     m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
 
-                glm::mat4 mvp = m_Proj * m_View * m_Model;
-                m_Texture0->Bind(0);
-                m_Shader->bind();
-                m_Shader->setUniform("u_MVP", mvp);
-                m_Renderer->draw(*m_VAO, *m_IBO_CONE, *m_Shader);
-                m_Texture0->Unbind();
-            }
+            //     glm::mat4 mvp = m_Proj * m_View * m_Model;
+            //     m_Texture0->Bind(0);
+            //     m_Shader->bind();
+            //     m_Shader->setUniform("u_MVP", mvp);
+            //     m_Renderer->draw(*m_VAO, *m_IBO_CONE, *m_Shader);
+            //     m_Texture0->Unbind();
+            // }
 
             m_Shader->setUniform("u_Texture", 0);
 
