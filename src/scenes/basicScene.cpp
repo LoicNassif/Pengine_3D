@@ -25,7 +25,7 @@ BasicScene::BasicScene(GLFWwindow *context)
 {
 
     plane = new Object("../res/objects/plane_box.obj", glm::vec3(0.0f, 0.0f, 0.0f));
-    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 0.5f, -9.0f));
+    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 0.5f, 0.0f));
     cone = new Object("../res/objects/big_funnel3.obj", glm::vec3(0.0f, 1.0f, 0.0f));
 
     const int numVertices = plane->getNumVertices() + box->getNumVertices(); // + cone->getNumVertices();
@@ -142,7 +142,7 @@ void BasicScene::onRender()
                 std::cout << std::endl;
                 std::cout << "Animation Frame: " << m_CurrentAnimationFrame << std::endl;
                 m_CurrentAnimationFrame++;
-                m_CollisionProcessor->processCollision(m_objects);
+                m_CollisionProcessor->processCollision(m_objects, m_ModelPausedCube, m_ModelPausedPlane);
             }
 
             // Start with Paused state
