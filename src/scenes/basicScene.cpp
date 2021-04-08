@@ -139,10 +139,10 @@ void BasicScene::onRender()
 
 
             if (!m_Paused) {
-                std::cout << std::endl;
-                std::cout << "Animation Frame: " << m_CurrentAnimationFrame << std::endl;
+                // std::cout << std::endl;
+                // std::cout << "Animation Frame: " << m_CurrentAnimationFrame << std::endl;
                 m_CurrentAnimationFrame++;
-                m_CollisionProcessor->processCollision(m_objects, m_ModelPausedCube, m_ModelPausedPlane);
+                // m_CollisionProcessor->processCollision(m_objects, m_ModelPausedCube, m_ModelPausedPlane);
             }
 
             // Start with Paused state
