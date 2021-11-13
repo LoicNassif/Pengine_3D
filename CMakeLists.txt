@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
-project(OpenGLExample)
+project(PEngine)
 
 macro(configure_msvc_runtime)
   if(MSVC)
