@@ -14,7 +14,12 @@ Tested on Windows10 MSVC, Linux (OpenSUSE, Ubuntu) g++.
 - Run cmake inside the build folder: `cmake ..`.
 - Run `make` if on a Linux machine, otherwise on Windows, `msbuild PEngine.sln`.
 
+### Updates
+- 2021-12-14
+  - Completed AABB-AABB bounding volume collision test.
+
 ### TODO 
+- Working on integrating collision processing.
 - Working on integrating collision detection.  
 - Replace GLM functions and implement MVP pipeline from scratch.
 - Refactor scene design to decouple any direct uses to OpenGL commands.
