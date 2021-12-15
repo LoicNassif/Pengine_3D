@@ -7,13 +7,11 @@ public:
     CollisionProcessor() {};
     ~CollisionProcessor() {};
 
-    void processCollision(const std::vector<Object *> &objs, glm::mat4 m_ModelA, glm::mat4 m_ModelB);
-    // void inputObject(Object* a);
+    void processCollision(const std::vector<Object *> &objs);
 
 private:
-    bool detectCollision(Object* a, Object* b);
-    bool detectCollTriangleTriangle(Object *A, int i, Object *B, int j);
-
-    Eigen::Matrix4f modelA;
-    Eigen::Matrix4f modelB;
+    bool collisionOBBOBB(const BVShape* boxA, const BVShape* boxB);
+    bool collisionPlanePoint(const Eigen::Vector3f& planePos, const Eigen::Vector3f& pointPos, const Eigen::Vector3f& planeN, float& pene);
+    bool collisionPlaneBox(const BVShape* plane, const BVShape* box);
+    bool collisionAABBAABB(Box* boxA, Box* boxB);
 };

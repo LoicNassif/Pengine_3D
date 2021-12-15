@@ -10,8 +10,8 @@
 #include "shader.hpp"
 #include "vertexarray.hpp"
 #include "camera.hpp"
-#include "object.hpp"
 #include "collisionprocessor.hpp"
+#include "box.hpp"
 
 #include "../renderer.hpp"
 #include "../../thirdparty/imgui/imgui.h"

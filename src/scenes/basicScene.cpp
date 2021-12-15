@@ -24,9 +24,11 @@ BasicScene::BasicScene(GLFWwindow *context)
       m_Window(context)
 {
 
-    plane = new Object("../res/objects/plane_box.obj", glm::vec3(0.0f, 0.0f, 0.0f));
-    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 0.5f, 0.0f));
-    cone = new Object("../res/objects/big_funnel3.obj", glm::vec3(0.0f, 1.0f, 0.0f));
+    plane = new Object("../res/objects/plane_box.obj", glm::vec3(0.0f, 0.0f, 0.0f), BVType::BOX);
+    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 0.5f, 0.0f), BVType::BOX);
+    cone = new Object("../res/objects/big_funnel3.obj", glm::vec3(0.0f, 1.0f, 0.0f), BVType::BOX);
+
+
 
     const int numVertices = plane->getNumVertices() + box->getNumVertices(); // + cone->getNumVertices();
 
@@ -138,28 +140,28 @@ void BasicScene::onRender()
             lastFrame = m_CurrentFrame;
 
 
-            if (!m_Paused) {
+            //if (!m_Paused) {
                 // std::cout << std::endl;
                 // std::cout << "Animation Frame: " << m_CurrentAnimationFrame << std::endl;
                 m_CurrentAnimationFrame++;
-                // m_CollisionProcessor->processCollision(m_objects, m_ModelPausedCube, m_ModelPausedPlane);
-            }
+                m_CollisionProcessor->processCollision(m_objects);
+            //}
 
             // Start with Paused state
-            if (m_CurrentAnimationFrame == 2) {
-                m_Paused = true;
-            }
+            //if (m_CurrentAnimationFrame == 2) {
+            //    m_Paused = true;
+            //}
 
             // Plane
             {
                 m_View = camera.GetViewMatrix();
 
-                if (!m_Paused) {
-                    m_Model = glm::translate(glm::mat4(1.0f), plane->m_Position);
-                    m_ModelPausedPlane = m_Model;
-                } else {
-                    m_Model = m_ModelPausedPlane;
-                }
+                //if (!m_Paused) {
+                m_Model = glm::translate(glm::mat4(1.0f), plane->m_Position);
+                //m_ModelPausedPlane = m_Model;
+                //} else {
+                //    m_Model = m_ModelPausedPlane;
+                //}
                 m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
 
                 glm::mat4 mvp = m_Proj * m_View * m_Model;
@@ -175,15 +177,16 @@ void BasicScene::onRender()
                 m_View = camera.GetViewMatrix();
 
                 if (!m_Paused) {
-                    box->m_Position.y += (float)-1 / (float)500;
-
-                    // box->m_Position.y += -0.5 * 9.8 * (float)m_CurrentAnimationFrame * (float)m_CurrentAnimationFrame / 1000000;
-                    m_Model = glm::translate(glm::mat4(1.0f), box->m_Position);
-                    // m_Model = glm::rotate(m_Model, (float)m_CurrentAnimationFrame / 50.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-                    m_ModelPausedCube = m_Model;
-                } else {
-                    m_Model = m_ModelPausedCube;
+                    //box->m_Position.y += -1.0f / 500.0f;
+                    box->translate(glm::vec3(0.0f, -1.0f / 500.0f, 0.0f));
                 }
+                // box->m_Position.y += -0.5 * 9.8 * (float)m_CurrentAnimationFrame * (float)m_CurrentAnimationFrame / 1000000;
+                m_Model = glm::translate(glm::mat4(1.0f), box->m_Position);
+                // m_Model = glm::rotate(m_Model, (float)m_CurrentAnimationFrame / 50.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+                //m_ModelPausedCube = m_Model;
+                //} else {
+                //    m_Model = m_ModelPausedCube;
+                //}
                 m_Proj = glm::perspective(glm::radians(camera.Fov), (float)scene::SCR_WIDTH / (float)scene::SCR_HEIGHT, 0.1f, 100.0f);
 
                 glm::mat4 mvp = m_Proj * m_View * m_Model;
@@ -251,6 +254,10 @@ void BasicScene::processInput()
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(m_Window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(m_Window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        camera.ProcessKeyboard(UP, deltaTime);
+    if (glfwGetKey(m_Window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        camera.ProcessKeyboard(DOWN, deltaTime);
 
     if (glfwGetKey(m_Window, GLFW_KEY_SPACE) == GLFW_PRESS)
         m_Paused = !m_Paused;

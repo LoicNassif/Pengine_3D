@@ -1,12 +1,9 @@
 #pragma once
-#include <string>
-#include "loadOBJ.hpp"
-#include "indexbuffer.hpp"
-#include "gtc/matrix_transform.hpp"
+#include "box.hpp"
 
 class Object {
     public:
-        Object(std::string filename, glm::vec3 position);
+        Object(std::string filename, glm::vec3 position, BVType bvtype);
         ~Object();
 
         int getNumVertices();
@@ -20,6 +17,8 @@ class Object {
 
         glm::vec3 m_Position;
         loadOBJ obj;
+
+        BVShape* bvshape;
 
     private : 
         int numVertices;

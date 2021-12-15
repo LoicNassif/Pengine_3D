@@ -42,7 +42,7 @@ namespace scene {
         std::vector<Object*> m_objects;
 
         glm::mat4 m_Proj, m_View, m_Model, m_MVP;
-        glm::mat4 m_ModelPausedCone, m_ModelPausedCube, m_ModelPausedPlane;
+        //glm::mat4 m_ModelPausedCone, m_ModelPausedCube, m_ModelPausedPlane;
 
         GLFWwindow *m_Window;
         GLuint byteoffset;
