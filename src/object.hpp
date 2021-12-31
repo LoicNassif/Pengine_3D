@@ -18,7 +18,14 @@ class Object {
         glm::vec3 m_Position;
         loadOBJ obj;
 
+        bool fixed = false;
+
         BVShape* bvshape;
+
+
+
+        // Physical properties
+        float mass;
 
     private : 
         int numVertices;
