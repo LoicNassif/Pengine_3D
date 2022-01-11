@@ -11,7 +11,7 @@
 #include <GLFW/glfw3.h>
 
 #include "renderer.hpp"
-#include "glm.hpp"
+#include "math/math.hpp"
 
 class Renderer;
 

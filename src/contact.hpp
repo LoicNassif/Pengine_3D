@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Eigen/Dense>
+#include "math/math.hpp"
 
 class Object;
 
@@ -26,6 +26,8 @@ public:
 
     Eigen::MatrixXf J0;     // Jacobian of first body
     Eigen::MatrixXf J1;     // Jacobian of second body
-    Eigen::MatrixXf phi;    // Constraint error
-    Eigen::MatrixXf lambda; // Constraint impulse
+    Eigen::MatrixXf J0Minv; // Jacobian * Mass inverse of first body
+    Eigen::MatrixXf J1Minv; // Jacobian * Mass inverse of second body
+    Eigen::VectorXf phi;    // Constraint error
+    Eigen::VectorXf lambda; // Constraint impulse
 };

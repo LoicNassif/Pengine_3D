@@ -1,7 +1,7 @@
 #include "object.hpp"
 
 
-Object::Object(std::string filename, glm::vec3 position, BVType bvtype)
+Object::Object(std::string filename, const Eigen::Vector3f& position, BVType bvtype)
     : obj(loadOBJ(filename)), m_Position(position)
 {
     // Create a bounding box for collision detection
@@ -40,13 +40,13 @@ void Object::loadInTexturecoords(std::vector<Eigen::Vector2f> &texturecoords)
 }
 
 // TODO
-void Object::rotate(float angle, const glm::vec3 &axis) {
+void Object::rotate(float angle, const Eigen::Vector3f &axis) {
 }
 
-void Object::translate(const glm::vec3 &translation) {
-    m_Position.x += translation.x;
-    m_Position.y += translation.y;
-    m_Position.z += translation.z;
+void Object::translate(const Eigen::Vector3f &translation) {
+    m_Position[0] += translation[0];
+    m_Position[1] += translation[1];
+    m_Position[2] += translation[2];
 
     if (bvshape->getBVType() == BVType::BOX) {
         Box* BVbox = dynamic_cast<Box*>(bvshape);
@@ -54,15 +54,39 @@ void Object::translate(const glm::vec3 &translation) {
         Eigen::Vector3f oldBVMinPos = BVbox->getBVMinVertex();
 
         BVbox->setBVMaxVertex(Eigen::Vector3f(
-            oldBVMaxPos.x() + translation.x,
-            oldBVMaxPos.y() + translation.y,
-            oldBVMaxPos.z() + translation.z
+            oldBVMaxPos.x() + translation[0],
+            oldBVMaxPos.y() + translation[1],
+            oldBVMaxPos.z() + translation[2]
         ));
 
         BVbox->setBVMinVertex(Eigen::Vector3f(
-            oldBVMinPos.x() + translation.x,
-            oldBVMinPos.y() + translation.y,
-            oldBVMinPos.z() + translation.z
+            oldBVMinPos.x() + translation[0],
+            oldBVMinPos.y() + translation[1],
+            oldBVMinPos.z() + translation[2]
+        ));
+    }
+}
+
+void Object::translate(const glm::vec3& translation) {
+    m_Position[0] += translation[0];
+    m_Position[1] += translation[1];
+    m_Position[2] += translation[2];
+
+    if (bvshape->getBVType() == BVType::BOX) {
+        Box* BVbox = dynamic_cast<Box*>(bvshape);
+        Eigen::Vector3f oldBVMaxPos = BVbox->getBVMaxVertex();
+        Eigen::Vector3f oldBVMinPos = BVbox->getBVMinVertex();
+
+        BVbox->setBVMaxVertex(Eigen::Vector3f(
+            oldBVMaxPos.x() + translation[0],
+            oldBVMaxPos.y() + translation[1],
+            oldBVMaxPos.z() + translation[2]
+        ));
+
+        BVbox->setBVMinVertex(Eigen::Vector3f(
+            oldBVMinPos.x() + translation[0],
+            oldBVMinPos.y() + translation[1],
+            oldBVMinPos.z() + translation[2]
         ));
     }
 }

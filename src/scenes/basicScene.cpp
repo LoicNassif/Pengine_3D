@@ -24,10 +24,10 @@ BasicScene::BasicScene(GLFWwindow *context)
       m_Window(context)
 {
 
-    plane = new Object("../res/objects/plane_box.obj", glm::vec3(0.0f, 0.0f, 0.0f), BVType::BOX);
+    plane = new Object("../res/objects/plane_box.obj", Eigen::Vector3f(0.0f, 0.0f, 0.0f), BVType::BOX);
     plane->fixed = true;
-    box = new Object("../res/objects/box.obj", glm::vec3(1.0f, 0.5f, 0.0f), BVType::BOX);
-    cone = new Object("../res/objects/big_funnel3.obj", glm::vec3(0.0f, 1.0f, 0.0f), BVType::BOX);
+    box = new Object("../res/objects/box.obj", Eigen::Vector3f(1.0f, 0.5f, 0.0f), BVType::BOX);
+    cone = new Object("../res/objects/big_funnel3.obj", Eigen::Vector3f(0.0f, 1.0f, 0.0f), BVType::BOX);
 
 
 
@@ -158,7 +158,12 @@ void BasicScene::onRender()
                 m_View = camera.GetViewMatrix();
 
                 //if (!m_Paused) {
-                m_Model = glm::translate(glm::mat4(1.0f), plane->m_Position);
+
+                // TODO: This is just temp. Eventually get rid of all GLM
+                Eigen::MatrixXf m_Model_temp = Eigen::MatrixXf::Identity(4,4);
+                math::translate(m_Model_temp, plane->m_Position);
+                math::eigen_to_glm(m_Model, m_Model_temp);
+
                 //m_ModelPausedPlane = m_Model;
                 //} else {
                 //    m_Model = m_ModelPausedPlane;
@@ -180,10 +185,13 @@ void BasicScene::onRender()
                 if (!m_Paused) {
                     // TODO: Velocity and acceleration needs to play a role here
                     //box->m_Position.y += -1.0f / 500.0f;
-                    box->translate(glm::vec3(0.0f, -1.0f / 500.0f, 0.0f));
+                    box->translate(Eigen::Vector3f(0.0f, -1.0f / 500.0f, 0.0f));
                 }
-                // box->m_Position.y += -0.5 * 9.8 * (float)m_CurrentAnimationFrame * (float)m_CurrentAnimationFrame / 1000000;
-                m_Model = glm::translate(glm::mat4(1.0f), box->m_Position);
+                // box->m_Position.y += -0.5 * 9.8 * (float)m_CurrentAnimationFrame * (float)m_CurrentAnimationFrame / 1000000;                
+
+                Eigen::MatrixXf m_Model_temp = Eigen::MatrixXf::Identity(4, 4);
+                math::translate(m_Model_temp, box->m_Position);
+                math::eigen_to_glm(m_Model, m_Model_temp);
                 // m_Model = glm::rotate(m_Model, (float)m_CurrentAnimationFrame / 50.0f + glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
                 //m_ModelPausedCube = m_Model;
                 //} else {

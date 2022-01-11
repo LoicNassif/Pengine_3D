@@ -72,8 +72,8 @@ void CollisionProcessor::processCollision(const std::vector<Object*>& objs)
                     // TODO: Call solver here
 
                     // This is just a temp implementation for visualization fun (and debugging)
-                    if (!objs[i]->fixed) objs[i]->translate(glm::vec3(0.0f, 1.0f / 500.0f, 0.0f));
-                    if (!objs[j]->fixed) objs[j]->translate(glm::vec3(0.0f, 1.0f / 500.0f, 0.0f));
+                    if (!objs[i]->fixed) objs[i]->translate(Eigen::Vector3f(0.0f, 1.0f / 500.0f, 0.0f));
+                    if (!objs[j]->fixed) objs[j]->translate(Eigen::Vector3f(0.0f, 1.0f / 500.0f, 0.0f));
                 }
         }
     }
