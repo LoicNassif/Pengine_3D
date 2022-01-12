@@ -2,9 +2,12 @@
 
 #include "object.hpp"
 
+class RigidBodyManager;
+
 class CollisionProcessor {
 public:
-    CollisionProcessor() {};
+    CollisionProcessor(RigidBodyManager* _rigidBodyManager) : m_rigidBodyManager(_rigidBodyManager) {};
+    CollisionProcessor() : m_rigidBodyManager(nullptr) {};
     ~CollisionProcessor() {};
 
     void processCollision(const std::vector<Object *> &objs);
@@ -16,4 +19,6 @@ private:
     bool collisionAABBAABB(Box* boxA, Box* boxB);
 
     void respondCollision();
+
+    RigidBodyManager* m_rigidBodyManager;
 };
