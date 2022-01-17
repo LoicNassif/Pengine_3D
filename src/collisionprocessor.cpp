@@ -78,3 +78,9 @@ void CollisionProcessor::processCollision(const std::vector<Object*>& objs)
         }
     }
 }
+
+// TODO
+void CollisionProcessor::computeContactJacobians() 
+{
+
+}

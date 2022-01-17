@@ -91,6 +91,12 @@ void Object::translate(const glm::vec3& translation) {
     }
 }
 
+// TODO
+void Object::updateInertiaMatrix() 
+{
+    
+}
+
 // void Object::initializeIBO(int start, int end) {
 //     std::vector<unsigned int> ind;
 //     for (int i = start; i < end; i++)

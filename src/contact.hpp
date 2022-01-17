@@ -30,4 +30,6 @@ public:
     Eigen::MatrixXf J1Minv; // Jacobian * Mass inverse of second body
     Eigen::VectorXf phi;    // Constraint error
     Eigen::VectorXf lambda; // Constraint impulse
+    float k;                // Contact stiffness (Baumgarte Stabilization)
+    float b;                // Contact damping (Baumgarte Stabilization)
 };

@@ -11,6 +11,11 @@ public:
     ~CollisionProcessor() {};
 
     void processCollision(const std::vector<Object *> &objs);
+    void computeContactJacobians();
+
+    const std::vector<Contact*>& getContacts() const { return m_contacts; }
+
+    std::vector<Contact*>& getContacts() { return m_contacts; }
 
 private:
     bool collisionOBBOBB(const BVShape* boxA, const BVShape* boxB);
@@ -21,4 +26,5 @@ private:
     void respondCollision();
 
     RigidBodyManager* m_rigidBodyManager;
+    std::vector<Contact*> m_contacts;
 };
